@@ -63,6 +63,18 @@ app = FastAPI(
     description="Intelligent honeypot agent for scam detection and intelligence extraction"
 )
 
+# CORS - Must be added immediately after app creation for browser compatibility
+# Note: allow_credentials must be False when using allow_origins=["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["X-Process-Time", "X-Request-ID"],
+)
+logger.info("✓ CORS enabled for all origins")
+
 # Rate limiting setup
 if RATE_LIMIT_AVAILABLE:
     limiter = Limiter(key_func=get_remote_address)
@@ -73,14 +85,6 @@ else:
     limiter = None
     logger.warning("SlowAPI not installed - rate limiting disabled")
 
-# CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Mount static files
 static_dir = os.path.join(os.path.dirname(__file__), "static")
