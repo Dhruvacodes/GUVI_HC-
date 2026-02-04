@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Scam Sentinel | Honeypot Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🛡️</span>
+                <h1>Anti-Scam Sentinel</h1>
+                <span class="version-badge">v2.0</span>
+            </div>
+            <div class="header-actions">
+                <div class="status-indicator">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span id="status-text">Connecting...</span>
+                </div>
+                <button class="btn btn-outline" id="settings-btn">
+                    <span>⚙️</span> Settings
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Left Panel - Chat Simulation -->
+        <section class="panel chat-panel">
+            <div class="panel-header">
+                <h2>💬 Scam Simulation</h2>
+                <div class="session-info">
+                    <span class="session-id" id="session-display">Session: --</span>
+                    <button class="btn btn-small" id="new-session-btn">New Session</button>
+                </div>
+            </div>
+            
+            <div class="chat-container" id="chat-container">
+                <div class="chat-welcome">
+                    <div class="welcome-icon">🎭</div>
+                    <h3>Start a Scam Simulation</h3>
+                    <p>Type a scam message to see how the honeypot agent responds.<br>
+                    The agent will detect scams and extract intelligence.</p>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="message-input" 
+                        placeholder="Type a scam message (e.g., 'Your SBI account will be blocked!')"
+                        rows="2"
+                    ></textarea>
+                    <button class="btn btn-primary send-btn" id="send-btn">
+                        <span>Send</span>
+                        <span class="send-icon">→</span>
+                    </button>
+                </div>
+                <div class="quick-actions">
+                    <span class="quick-label">Quick tests:</span>
+                    <button class="quick-btn" data-message="Your SBI account will be blocked within 24 hours due to KYC update pending.">🏦 Bank Scam</button>
+                    <button class="quick-btn" data-message="Congratulations! You have won Rs 50 lakh in our lucky draw! Send Rs 500 to claim.">🎰 Lottery</button>
+                    <button class="quick-btn" data-message="Your FedEx parcel is stuck at customs. Pay Rs 2000 clearance fee immediately.">📦 Courier</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel - Analytics -->
+        <section class="panel analytics-panel">
+            <!-- Detection Card -->
+            <div class="card detection-card" id="detection-card">
+                <div class="card-header">
+                    <h3>🎯 Detection Status</h3>
+                </div>
+                <div class="card-body">
+                    <div class="detection-status" id="detection-status">
+                        <span class="status-icon">⏳</span>
+                        <span>Awaiting message...</span>
+                    </div>
+                    <div class="detection-details" id="detection-details" style="display: none;">
+                        <div class="detail-row">
+                            <span class="label">Scam Type:</span>
+                            <span class="value" id="scam-type">--</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Confidence:</span>
+                            <div class="progress-bar">
+                                <div class="progress" id="confidence-bar" style="width: 0%"></div>
+                            </div>
+                            <span class="value" id="confidence-value">0%</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Threat Level:</span>
+                            <span class="threat-badge" id="threat-level">--</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Persona:</span>
+                            <span class="value" id="persona-used">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intelligence Card -->
+            <div class="card intel-card">
+                <div class="card-header">
+                    <h3>🔍 Extracted Intelligence</h3>
+                    <span class="intel-score" id="intel-score">0/100</span>
+                </div>
+                <div class="card-body">
+                    <div class="intel-grid" id="intel-grid">
+                        <div class="intel-item">
+                            <span class="intel-icon">💳</span>
+                            <span class="intel-label">UPI IDs</span>
+                            <span class="intel-count" id="upi-count">0</span>
+                        </div>
+                        <div class="intel-item">
+                            <span class="intel-icon">🏦</span>
+                            <span class="intel-label">Bank Accounts</span>
+                            <span class="intel-count" id="bank-count">0</span>
+                        </div>
+                        <div class="intel-item">
+                            <span class="intel-icon">📱</span>
+                            <span class="intel-label">Phone Numbers</span>
+                            <span class="intel-count" id="phone-count">0</span>
+                        </div>
+                        <div class="intel-item">
+                            <span class="intel-icon">🔗</span>
+                            <span class="intel-label">URLs</span>
+                            <span class="intel-count" id="url-count">0</span>
+                        </div>
+                    </div>
+                    <div class="intel-list" id="intel-list">
+                        <p class="empty-state">No intelligence extracted yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Endpoint Tester Card -->
+            <div class="card tester-card">
+                <div class="card-header">
+                    <h3>🧪 API Endpoint Tester</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="api-url">Endpoint URL</label>
+                        <input type="text" id="api-url" placeholder="http://localhost:8000" value="http://localhost:8000">
+                    </div>
+                    <div class="form-group">
+                        <label for="api-key">API Key (Header)</label>
+                        <input type="password" id="api-key" placeholder="Enter your API key">
+                    </div>
+                    <button class="btn btn-primary btn-full" id="test-endpoint-btn">
+                        🔌 Test Honeypot Endpoint
+                    </button>
+                    <div class="test-result" id="test-result" style="display: none;">
+                        <div class="result-header">
+                            <span class="result-status" id="result-status"></span>
+                            <span class="result-time" id="result-time"></span>
+                        </div>
+                        <pre class="result-body" id="result-body"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Card -->
+            <div class="card metrics-card">
+                <div class="card-header">
+                    <h3>📊 Session Metrics</h3>
+                </div>
+                <div class="card-body">
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <span class="metric-value" id="metric-turns">0</span>
+                            <span class="metric-label">Turns</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="metric-latency">--</span>
+                            <span class="metric-label">Latency</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value" id="metric-phase">--</span>
+                            <span class="metric-label">Phase</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="close-btn" id="close-settings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="settings-api-url">API Base URL</label>
+                    <input type="text" id="settings-api-url" value="http://localhost:8000">
+                </div>
+                <div class="form-group">
+                    <label for="settings-api-key">API Key</label>
+                    <input type="password" id="settings-api-key" placeholder="Your API key for authentication">
+                    <small>Used in X-API-Key header for authenticated requests</small>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="settings-auto-scroll" checked>
+                        Auto-scroll chat
+                    </label>
+                </div>
+                <button class="btn btn-primary btn-full" id="save-settings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
