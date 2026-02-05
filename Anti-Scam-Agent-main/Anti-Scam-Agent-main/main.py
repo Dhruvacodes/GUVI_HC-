@@ -174,7 +174,7 @@ async def health_check():
 # HONEYPOT TEST ENDPOINT (For Hackathon Evaluation)
 # =============================================================================
 
-@app.get("/honeypot/test")
+@app.api_route("/honeypot/test", methods=["GET", "POST"])
 async def honeypot_test(x_api_key: Optional[str] = Header(None)):
     """
     Honeypot test endpoint for evaluation platform.
